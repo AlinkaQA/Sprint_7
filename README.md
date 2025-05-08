@@ -54,9 +54,7 @@ API-документация: https://qa-scooter.praktikum-services.ru/docs
 Чтобы закоммитить только Allure-отчёт, выполните:
 
 bash
-Копировать
-Редактировать
+
 git add -f ./target/allure-results/.
 git commit -m "add allure report"
-git push# Sprint_7
-# Sprint_7
+git push
