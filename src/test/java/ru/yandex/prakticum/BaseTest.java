@@ -1,5 +1,6 @@
 package ru.yandex.prakticum;
 
+import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.junit.After;
@@ -25,12 +26,22 @@ public class BaseTest {
                     courier.getLogin(),
                     courier.getPassword()
             );
-            Response loginResponse = courierClient.loginCourier(creds);
+            Response loginResponse = loginCourier(creds);
             Integer courierId = loginResponse.body().path("id");
             if (courierId != null) {
-                courierClient.deleteCourier(courierId);
+                deleteCourier(courierId);
             }
         }
+    }
+
+    @Step("Авторизация курьера для удаления: {creds}")
+    private Response loginCourier(CourierCredentials creds) {
+        return courierClient.loginCourier(creds);
+    }
+
+    @Step("Удаление курьера по ID: {id}")
+    private void deleteCourier(Integer id) {
+        courierClient.deleteCourier(id);
     }
 }
 

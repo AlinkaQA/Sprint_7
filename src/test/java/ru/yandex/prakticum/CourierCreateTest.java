@@ -1,5 +1,6 @@
 package ru.yandex.prakticum;
 
+import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
@@ -25,11 +26,11 @@ public class CourierCreateTest extends BaseTest {
                     createdCourier.getLogin(),
                     createdCourier.getPassword()
             );
-            Response login = courierClient.loginCourier(creds);
+            Response login = loginCourier(creds);
             Integer id = login.body().path("id");
 
             if (id != null) {
-                courierClient.deleteCourier(id);
+                deleteCourier(id);
             }
         }
     }
@@ -39,7 +40,7 @@ public class CourierCreateTest extends BaseTest {
     public void shouldCreateCourierSuccessfully() {
         createdCourier = new Courier("courier_" + UUID.randomUUID(), "1234", "TestName");
 
-        courierClient.createCourier(createdCourier)
+        createCourier(createdCourier)
                 .then()
                 .statusCode(HttpStatus.SC_CREATED)
                 .body("ok", equalTo(true));
@@ -51,14 +52,12 @@ public class CourierCreateTest extends BaseTest {
         String login = "courier_" + UUID.randomUUID();
         createdCourier = new Courier(login, "1234", "First");
 
-        // 1. Создать первого
-        courierClient.createCourier(createdCourier)
+        createCourier(createdCourier)
                 .then().statusCode(HttpStatus.SC_CREATED);
 
-        // 2. Попробовать создать второго с тем же логином
         Courier duplicateCourier = new Courier(login, "abcd", "Second");
 
-        courierClient.createCourier(duplicateCourier)
+        createCourier(duplicateCourier)
                 .then()
                 .statusCode(HttpStatus.SC_CONFLICT)
                 .body("message", equalTo("Этот логин уже используется. Попробуйте другой."));
@@ -69,7 +68,7 @@ public class CourierCreateTest extends BaseTest {
     public void shouldNotCreateCourierWithoutLogin() {
         Courier courier = new Courier(null, "pass123", "NoLogin");
 
-        courierClient.createCourier(courier)
+        createCourier(courier)
                 .then()
                 .statusCode(HttpStatus.SC_BAD_REQUEST)
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
@@ -80,7 +79,7 @@ public class CourierCreateTest extends BaseTest {
     public void shouldNotCreateCourierWithoutPassword() {
         Courier courier = new Courier("courier_" + UUID.randomUUID(), null, "NoPassword");
 
-        courierClient.createCourier(courier)
+        createCourier(courier)
                 .then()
                 .statusCode(HttpStatus.SC_BAD_REQUEST)
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
@@ -91,7 +90,7 @@ public class CourierCreateTest extends BaseTest {
     public void shouldCreateCourierWithoutName() {
         createdCourier = new Courier("courier_" + UUID.randomUUID(), "pass123", null);
 
-        courierClient.createCourier(createdCourier)
+        createCourier(createdCourier)
                 .then()
                 .statusCode(HttpStatus.SC_CREATED)
                 .body("ok", equalTo(true));
@@ -102,9 +101,24 @@ public class CourierCreateTest extends BaseTest {
     public void shouldNotCreateCourierWithoutLoginAndPassword() {
         Courier courier = new Courier(null, null, "NoLoginPass");
 
-        courierClient.createCourier(courier)
+        createCourier(courier)
                 .then()
                 .statusCode(HttpStatus.SC_BAD_REQUEST)
                 .body("message", equalTo("Недостаточно данных для создания учетной записи"));
+    }
+
+    @Step("Создание курьера: {courier}")
+    private Response createCourier(Courier courier) {
+        return courierClient.createCourier(courier);
+    }
+
+    @Step("Логин курьера для удаления: {creds}")
+    private Response loginCourier(CourierCredentials creds) {
+        return courierClient.loginCourier(creds);
+    }
+
+    @Step("Удаление курьера по id: {id}")
+    private void deleteCourier(Integer id) {
+        courierClient.deleteCourier(id);
     }
 }

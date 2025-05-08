@@ -53,14 +53,14 @@
             <version>2.2</version>
         </dependency>
 
-        <!-- Allure -->
+        <!-- Allure JUnit 4 -->
         <dependency>
             <groupId>io.qameta.allure</groupId>
             <artifactId>allure-junit4</artifactId>
             <version>2.21.0</version>
         </dependency>
 
-        <!-- Jackson Databind -->
+        <!-- Jackson -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -86,6 +86,7 @@
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
         <plugins>
+            <!-- Компилятор -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -103,6 +104,7 @@
                 </configuration>
             </plugin>
 
+            <!-- Jacoco -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -125,22 +127,25 @@
                 </executions>
             </plugin>
 
+            <!-- Allure Maven -->
             <plugin>
                 <groupId>io.qameta.allure</groupId>
                 <artifactId>allure-maven</artifactId>
                 <version>2.11.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>serve</goal>
-                        </goals>
-                        <configuration>
-                            <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
+            </plugin>
+
+            <!-- Surefire plugin с настройкой Allure -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
+                <configuration>
+                    <systemPropertyVariables>
+                        <listener>io.qameta.allure.junit4.AllureJunit4</listener>
+                        <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+                    </systemPropertyVariables>
+                </configuration>
             </plugin>
         </plugins>
     </build>
 </project>
-
