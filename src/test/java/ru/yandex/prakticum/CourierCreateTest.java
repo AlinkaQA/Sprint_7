@@ -1,5 +1,6 @@
 package ru.yandex.prakticum;
 
+import io.qameta.allure.Description;
 import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
@@ -37,6 +38,7 @@ public class CourierCreateTest extends BaseTest {
 
     @Test
     @DisplayName("Курьера можно создать с валидными данными")
+    @Description("Тест проверяет создание курьера с валидными данными, такими как логин, пароль и имя.")
     public void shouldCreateCourierSuccessfully() {
         createdCourier = new Courier("courier_" + UUID.randomUUID(), "1234", "TestName");
 
@@ -48,6 +50,7 @@ public class CourierCreateTest extends BaseTest {
 
     @Test
     @DisplayName("Нельзя создать двух курьеров с одинаковым логином")
+    @Description("Тест проверяет, что при попытке создания курьера с уже существующим логином, сервер вернет ошибку конфликта.")
     public void shouldNotAllowDuplicateCourier() {
         String login = "courier_" + UUID.randomUUID();
         createdCourier = new Courier(login, "1234", "First");
@@ -65,6 +68,7 @@ public class CourierCreateTest extends BaseTest {
 
     @Test
     @DisplayName("Нельзя создать курьера без логина")
+    @Description("Тест проверяет, что курьер не может быть создан, если не указан логин.")
     public void shouldNotCreateCourierWithoutLogin() {
         Courier courier = new Courier(null, "pass123", "NoLogin");
 
@@ -76,6 +80,7 @@ public class CourierCreateTest extends BaseTest {
 
     @Test
     @DisplayName("Нельзя создать курьера без пароля")
+    @Description("Тест проверяет, что курьер не может быть создан, если не указан пароль.")
     public void shouldNotCreateCourierWithoutPassword() {
         Courier courier = new Courier("courier_" + UUID.randomUUID(), null, "NoPassword");
 
@@ -87,6 +92,7 @@ public class CourierCreateTest extends BaseTest {
 
     @Test
     @DisplayName("Нельзя создать курьера без имени")
+    @Description("Тест проверяет, что курьер может быть создан без имени, так как имя не является обязательным полем.")
     public void shouldCreateCourierWithoutName() {
         createdCourier = new Courier("courier_" + UUID.randomUUID(), "pass123", null);
 
@@ -98,6 +104,7 @@ public class CourierCreateTest extends BaseTest {
 
     @Test
     @DisplayName("Нельзя создать курьера без логина и пароля")
+    @Description("Тест проверяет, что курьер не может быть создан без логина и пароля.")
     public void shouldNotCreateCourierWithoutLoginAndPassword() {
         Courier courier = new Courier(null, null, "NoLoginPass");
 
@@ -122,3 +129,4 @@ public class CourierCreateTest extends BaseTest {
         courierClient.deleteCourier(id);
     }
 }
+

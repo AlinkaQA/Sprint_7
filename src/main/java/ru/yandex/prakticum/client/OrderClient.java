@@ -16,10 +16,10 @@ public class OrderClient {
 
     static {
         RestAssured.baseURI = Config.BASE_URL;
-        RestAssured.useRelaxedHTTPSValidation(); // на всякий случай
+        RestAssured.useRelaxedHTTPSValidation();
     }
 
-    // Базовая спецификация — если нет Client.java
+
     private RequestSpecification spec() {
         return given()
                 .baseUri(Config.BASE_URL)

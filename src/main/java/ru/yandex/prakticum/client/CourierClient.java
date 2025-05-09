@@ -4,6 +4,7 @@ import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import ru.yandex.prakticum.model.Courier;
 import ru.yandex.prakticum.model.CourierCredentials;
+import ru.yandex.prakticum.model.PasswordRequest;  // Добавил класс для пароля
 
 import static io.restassured.RestAssured.given;
 
@@ -16,7 +17,7 @@ public class CourierClient {
         return given()
                 .header("Content-type", "application/json")
                 .and()
-                .body(courier)
+                .body(courier) // RestAssured автоматически сериализует объект в JSON
                 .when()
                 .post(COURIER_PATH);
     }
@@ -26,17 +27,20 @@ public class CourierClient {
         return given()
                 .header("Content-type", "application/json")
                 .and()
-                .body(creds)
+                .body(creds) // RestAssured автоматически сериализует объект в JSON
                 .when()
                 .post(COURIER_PATH + "/login");
     }
 
     @Step("Логин без логина")
     public Response loginCourierWithoutLogin(String password) {
+        // Создаем объект PasswordRequest и передаем его в теле запроса
+        PasswordRequest passwordRequest = new PasswordRequest(password);
+
         return given()
                 .header("Content-type", "application/json")
                 .and()
-                .body("{ \"password\": \"" + password + "\" }")
+                .body(passwordRequest) // Теперь передаем сериализованный объект
                 .when()
                 .post(COURIER_PATH + "/login");
     }
@@ -49,3 +53,4 @@ public class CourierClient {
                 .delete(COURIER_PATH + "/" + courierId);
     }
 }
+

@@ -111,8 +111,7 @@ public class OrderCreateTest {
         log.info("Ответ на отмену заказа: {}", response.body().asString());
 
         // Поддерживаем 200 (успешно), 400 (не нашёлся), 404 (не существует)
-        response.then().statusCode(anyOf(equalTo(200), equalTo(400), equalTo(404)));
+        response.then().statusCode(anyOf(equalTo(HttpStatus.SC_OK), equalTo(HttpStatus.SC_BAD_REQUEST), equalTo(HttpStatus.SC_NOT_FOUND)));
     }
 
 }
-
