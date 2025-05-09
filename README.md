@@ -53,8 +53,6 @@ API-документация: https://qa-scooter.praktikum-services.ru/docs
 ⚠️ Папку target в репозиторий не добавлять.
 Чтобы закоммитить только Allure-отчёт, выполните:
 
-```bash
-
 git add -f ./target/allure-results/.
 git commit -m "add allure report"
 git push
